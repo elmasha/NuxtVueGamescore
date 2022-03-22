@@ -40,6 +40,14 @@ export default {
         '@nuxtjs/axios',
     ],
 
+    // In your nuxt.config.js file:
+modules: [
+  'vue-social-sharing/nuxt'
+],
+generate: {
+  fallback: true
+},
+
     // Axios module configuration: https://go.nuxtjs.dev/config-axios
     axios: {
         // Workaround to avoid enforcing hard-coded localhost:3000: https://github.com/nuxt-community/axios-module/issues/308
@@ -50,7 +58,7 @@ export default {
     vuetify: {
         customVariables: ['~/assets/variables.scss'],
         theme: {
-            dark: true,
+            dark: false,
             themes: {
                 dark: {
                     primary: colors.blue.darken2,

@@ -1,83 +1,137 @@
 <template>
-  <v-row justify="center" align="center">
-    <v-col cols="12" sm="8" md="6">
-      <v-card class="logo py-4 d-flex justify-center">
-        <NuxtLogo />
-        <VuetifyLogo />
-      </v-card>
-      <v-card>
-        <v-card-title class="headline">
-          Welcome to the Vuetify + Nuxt.js template
-        </v-card-title>
-        <v-card-text>
-          <p>Vuetify is a progressive Material Design component framework for Vue.js. It was designed to empower developers to create amazing applications.</p>
-          <p>
-            For more information on Vuetify, check out the <a
-              href="https://vuetifyjs.com"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              documentation
-            </a>.
-          </p>
-          <p>
-            If you have questions, please join the official <a
-              href="https://chat.vuetifyjs.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-              title="chat"
-            >
-              discord
-            </a>.
-          </p>
-          <p>
-            Find a bug? Report it on the github <a
-              href="https://github.com/vuetifyjs/vuetify/issues"
-              target="_blank"
-              rel="noopener noreferrer"
-              title="contribute"
-            >
-              issue board
-            </a>.
-          </p>
-          <p>Thank you for developing with Vuetify and I look forward to bringing more exciting features in the future.</p>
-          <div class="text-xs-right">
-            <em><small>&mdash; John Leider</small></em>
+  <div>
+    <h2>News</h2>
+    <v-layout>
+      <v-flex>
+        <div class="with-header d-flex row">
+          <div
+            v-for="newFeed in newFeeds"
+            :key="newFeed.id"
+            :id="newFeeds.id"
+            :newFeed="newFeed.newFeed"
+            class="col-md-4"
+          >
+            <v-card class="mx-auto my-12" max-width="700">
+              <v-img height="280" :src="newFeed.urlToImage"></v-img>
+
+              <v-card-title>{{ newFeed.title }}</v-card-title>
+
+              <v-card-text>
+                <div class="my-4 text-subtitle-1">
+                  <span class="span2"> <b>Author:</b></span> {{ newFeed.author }}
+                </div>
+
+                <div>
+                  {{ newFeed.description }}
+                </div>
+              </v-card-text>
+              <v-chip id="chip"
+                ><a id="readmore" :href="newFeed.url"><span> Read more</span> </a>
+              </v-chip>
+              <v-divider class="mx-4"></v-divider>
+
+              <v-card-actions>
+                <div><span>Share On</span> <v-icon>mdi-share</v-icon></div>
+                <ShareNetwork
+                  id="shareIcon"
+                  network="WhatsApp"
+                  :title="newFeed.url"
+                  url=""
+                  description=""
+                >
+                  <v-icon id="shareIcon2">mdi-whatsapp</v-icon>
+                </ShareNetwork>
+
+                <ShareNetwork
+                  id="shareIcon"
+                  network="facebook"
+                  :title="newFeed.url"
+                  url=""
+                  description=""
+                >
+                  <v-icon id="shareIcon2">mdi-facebook</v-icon>
+                </ShareNetwork>
+
+                <ShareNetwork
+                  id="shareIcon"
+                  network="WhatsApp"
+                  :title="newFeed.url"
+                  url=""
+                  description=""
+                >
+                  <v-icon id="shareIcon2">mdi-facebook-messenger</v-icon>
+                </ShareNetwork>
+              </v-card-actions>
+
+              <v-chip-group
+                v-model="selection"
+                active-class="deep-green accent-5 white--text"
+                column
+              >
+              </v-chip-group>
+            </v-card>
           </div>
-          <hr class="my-3">
-          <a
-            href="https://nuxtjs.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Nuxt Documentation
-          </a>
-          <br>
-          <a
-            href="https://github.com/nuxt/nuxt.js"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Nuxt GitHub
-          </a>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn
-            color="primary"
-            nuxt
-            to="/inspire"
-          >
-            Continue
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-col>
-  </v-row>
+        </div>
+      </v-flex>
+    </v-layout>
+  </div>
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
-  name: 'IndexPage'
-}
+  name: "IndexPage",
+  components: {},
+  data() {
+    return { newFeeds: [] };
+  },
+  async created() {
+    try {
+      const articles = await axios.get(
+        "https://newsapi.org/v2/top-headlines?country=us&category=sports&apiKey=6c9865edf6224bb3813f745119fe94fb"
+      );
+
+      this.newFeeds = articles.data.articles;
+      console.log(this.articles);
+      return this.articles;
+    } catch (err) {
+      console.log(err);
+    }
+  },
+};
 </script>
+
+<style scoped>
+h2 {
+  color: #f19124;
+}
+#chip {
+  margin: 20px;
+}
+#shareIcon {
+  text-decoration-line: none;
+  margin: 5px;
+}
+
+#shareIcon2:hover {
+  color: #f19124;
+}
+#readmore {
+  text-decoration-line: none;
+  font-size: 17px;
+  color: #492803;
+  text-align: center;
+  font-weight: 400;
+}
+.span2 {
+  color: #f19124;
+}
+hr {
+  background-color: #f19124;
+}
+
+.nuxt-link {
+  text-decoration: none;
+}
+</style>
