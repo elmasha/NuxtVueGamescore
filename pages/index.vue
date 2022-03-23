@@ -86,18 +86,27 @@ export default {
   data() {
     return { newFeeds: [] };
   },
+
   async created() {
     try {
-      const articles = await axios.get(
-        "https://newsapi.org/v2/top-headlines?country=us&category=sports&apiKey=6c9865edf6224bb3813f745119fe94fb"
-      );
-
-      this.newFeeds = articles.data.articles;
-      console.log(this.articles);
-      return this.articles;
+      const response = await axios.get("/api/news");
+      console.log(response.data);
+      this.newFeeds = response.data;
+      console.log(this.newFeeds);
+      return this.newFeeds;
     } catch (err) {
       console.log(err);
     }
+  },
+  methods: {
+    async showMessageFromBackend() {
+      try {
+        const response = await axios.get("/api/test");
+        console.log(response.data);
+      } catch (err) {
+        console.log(err);
+      }
+    },
   },
 };
 </script>
