@@ -26,12 +26,7 @@
     <v-app-bar :clipped-left="clipped" fixed app elevate-on-scroll>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
       <nuxt-link to="/"
-        ><img
-          id="iconImage"
-          class="mx-4"
-          src="~/assets/logo20.png"
-          max-height="40"
-          width="160"
+        ><img id="iconImage" src="~/assets/logo20.png" max-height="40" width="150"
       /></nuxt-link>
       <v-spacer />
 
@@ -43,7 +38,6 @@
     <v-main>
       <v-container>
         <Nuxt />
-
       </v-container>
     </v-main>
 
@@ -88,7 +82,7 @@ export default {
 </script>
 <style scoped>
 #iconImage {
-  margin-top: 20;
+  margin-top: 15px;
 }
 
 #yticon {

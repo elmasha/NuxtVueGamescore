@@ -1,9 +1,53 @@
 <template>
   <div>
+    <div class="col-md-12 text-center">
+      <div id="header-image" class="">
+        <img :src="header" align="center" style="width: 100%" />
+      </div>
+    </div>
     <h2>News</h2>
     <v-layout>
       <v-flex>
+        <!-- DB FEED-->
         <div class="with-header d-flex row">
+          <div
+            v-for="story in stories"
+            :key="story.id"
+            :id="stories.id"
+            :story="story.story"
+            class="col-md-4"
+          >
+            <v-card class="mx-auto my-12" max-width="700">
+              <v-img height="280" :src="story.image"></v-img>
+
+              <v-card-title>{{ story.title }}</v-card-title>
+
+              <v-card-text>
+                <div class="my-4 text-subtitle-1">
+                  <span class="span2"> <b>Author:</b></span>
+                </div>
+
+                <div>
+                  {{ story.subtitle }}
+                </div>
+              </v-card-text>
+              <v-divider class="mx-4"></v-divider>
+
+              <v-chip id="chip"
+                ><a id="readmore" href="newFeed.url"><span> Read more</span> </a>
+              </v-chip>
+
+              <v-card-actions> </v-card-actions>
+
+              <v-chip-group
+                v-model="selection"
+                active-class="deep-green accent-5 white--text"
+                column
+              >
+              </v-chip-group>
+            </v-card>
+          </div>
+          <!-- NEWsAPI FEED-->
           <div
             v-for="newFeed in newFeeds"
             :key="newFeed.id"
@@ -84,7 +128,11 @@ export default {
   name: "IndexPage",
   components: {},
   data() {
-    return { newFeeds: [] };
+    return {
+      newFeeds: [],
+      stories: [],
+      header: require("/assets/header.jpg"),
+    };
   },
 
   async created() {
@@ -107,6 +155,35 @@ export default {
         console.log(err);
       }
     },
+  },
+  async mounted() {
+    let start = new Date("2019-01-01");
+    const db = this.$fire.firestore;
+    db.collection("Stories")
+      .get()
+      .then((queryResult6) => {
+        queryResult6.forEach((doc) => {
+          const data = {
+            id: doc.id,
+            title: doc.data().title,
+            subtitle: doc.data().subtitle,
+            subHeading: doc.data().subheading,
+            subHeading1: doc.data().subheading1,
+            subHeading2: doc.data().subheading2,
+            subHeading3: doc.data().subheading3,
+            Category: doc.data().category,
+            story: doc.data().story,
+            story1: doc.data().story1,
+            story2: doc.data().story2,
+            story3: doc.data().story2,
+            image: doc.data().image,
+            comment: doc.data().comment,
+            like: doc.data().like,
+          };
+          this.stories.push(data);
+          console.log("Stories", this.stories);
+        });
+      });
   },
 };
 </script>
