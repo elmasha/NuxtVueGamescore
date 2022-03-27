@@ -286,13 +286,13 @@ export default {
   background-color: #f7daba;
   color: rgb(25, 97, 3);
   padding: 5px 12px 5px 12px;
-  margin: 10px 7px 10px 7px;
+  margin: 10px 7px 12px 7px;
   box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
 }
 .scrollmenu {
   overflow: auto;
   white-space: wrap;
-  padding: 5px 12px 5px 12px;
+  padding: 5px 10px 5px 10px;
 }
 
 #heading {
