@@ -1,11 +1,18 @@
 <template>
   <div>
-    <div class="col-md-12 text-center">
+    <div class="col-md-12">
       <div id="header-image" class="">
         <img :src="header" align="center" style="width: 100%" />
       </div>
+      <h2 id="heading">News</h2>
     </div>
-    <h2>News</h2>
+
+    <h5 id="catsLabel">Categories</h5>
+    <div class="d-flex scrollmenu">
+      <div v-for="cat in category" :key="cat.id" :id="category.id" :cat="cat.cat">
+        <span id="cats" @click="SearchStory(cat.cat)">{{ cat.cat }}</span>
+      </div>
+    </div>
     <v-layout>
       <v-flex>
         <!-- DB FEED-->
@@ -17,8 +24,16 @@
             :story="story.story"
             class="col-md-4"
           >
-            <v-card class="mx-auto my-12" max-width="700">
-              <v-img height="280" :src="story.image"></v-img>
+            <v-card class="mx-auto my-12" max-width="800">
+              <v-img height="280" :src="story.image"
+                ><template v-slot:placeholder>
+                  <v-row class="fill-height ma-0" align="center" justify="center">
+                    <v-progress-circular
+                      indeterminate
+                      color="green lighten-6"
+                    ></v-progress-circular>
+                  </v-row> </template
+              ></v-img>
 
               <v-card-title>{{ story.title }}</v-card-title>
 
@@ -31,13 +46,23 @@
                   {{ story.subtitle }}
                 </div>
               </v-card-text>
-              <v-divider class="mx-4"></v-divider>
 
-              <v-chip id="chip"
-                ><a id="readmore" href="newFeed.url"><span> Read more</span> </a>
+              <v-chip id="chip">
+                <nuxt-link id="linkId" :to="`/news/${story.id}`"
+                  ><v-chip> <span id="readmore"> Read more</span> </v-chip>
+                </nuxt-link>
               </v-chip>
-
+              <v-divider class="mx-4"></v-divider>
               <v-card-actions> </v-card-actions>
+
+              <v-card-actions>
+                <span id="shareIcon"
+                  ><v-icon>mdi-emoticon-happy-outline</v-icon> {{ story.like }}</span
+                >
+                <span id="shareIcon"
+                  ><v-icon>mdi-comment-text-multiple</v-icon> {{ story.comment }}</span
+                >
+              </v-card-actions>
 
               <v-chip-group
                 v-model="selection"
@@ -69,13 +94,14 @@
                   {{ newFeed.description }}
                 </div>
               </v-card-text>
-              <v-chip id="chip"
-                ><a id="readmore" :href="newFeed.url"><span> Read more</span> </a>
-              </v-chip>
+
+              <nuxt-link id="chip" :to="`/news/${newFeeds.id}`"
+                ><v-chip> <span id="readmore"> Read more</span> </v-chip>
+              </nuxt-link>
+
               <v-divider class="mx-4"></v-divider>
 
               <v-card-actions>
-                <div><span>Share On</span> <v-icon>mdi-share</v-icon></div>
                 <ShareNetwork
                   id="shareIcon"
                   network="WhatsApp"
@@ -83,7 +109,7 @@
                   url=""
                   description=""
                 >
-                  <v-icon id="shareIcon2">mdi-whatsapp</v-icon>
+                  <v-icon id="shareIcon2">emoticon-happy-outline</v-icon>
                 </ShareNetwork>
 
                 <ShareNetwork
@@ -107,11 +133,7 @@
                 </ShareNetwork>
               </v-card-actions>
 
-              <v-chip-group
-                v-model="selection"
-                active-class="deep-green accent-5 white--text"
-                column
-              >
+              <v-chip-group active-class="deep-green accent-5 white--text" column>
               </v-chip-group>
             </v-card>
           </div>
@@ -123,6 +145,7 @@
 
 <script>
 import axios from "axios";
+import moment from "vue-moment";
 
 export default {
   name: "IndexPage",
@@ -131,6 +154,8 @@ export default {
     return {
       newFeeds: [],
       stories: [],
+      category: [],
+      searchText: null,
       header: require("/assets/header.jpg"),
     };
   },
@@ -155,10 +180,26 @@ export default {
         console.log(err);
       }
     },
+    formatDate(dt) {
+      return moment(String(dt)).format("ddd, MMMM YYYY");
+      // you dont have to use fromNow() it's just an example
+    },
   },
   async mounted() {
     let start = new Date("2019-01-01");
     const db = this.$fire.firestore;
+    db.collection("Category")
+      .get()
+      .then((queryResult6) => {
+        queryResult6.forEach((doc) => {
+          const data1 = {
+            id: doc.id,
+            cat: doc.data().cat,
+          };
+
+          this.category.push(data1);
+        });
+      });
     db.collection("Stories")
       .get()
       .then((queryResult6) => {
@@ -176,26 +217,95 @@ export default {
             story1: doc.data().story1,
             story2: doc.data().story2,
             story3: doc.data().story2,
+            date: doc.data().timestamp,
             image: doc.data().image,
             comment: doc.data().comment,
             like: doc.data().like,
           };
           this.stories.push(data);
-          console.log("Stories", this.stories);
         });
       });
+  },
+  method: {
+    // methods area
+    formatDate(dt) {
+      return moment(String(dt)).format("ddd, MMMM YYYY");
+      // you dont have to use fromNow() it's just an example
+    },
+    async SearchStory(val) {
+      this.stories.splice(this.stories);
+      const db = this.$fire.firestore;
+      db.collection("Stories")
+        .where("category", "==", val)
+        .get()
+        .then((queryResult6) => {
+          queryResult6.forEach((doc) => {
+            const data = {
+              id: doc.id,
+              title: doc.data().title,
+              subtitle: doc.data().subtitle,
+              subHeading: doc.data().subheading,
+              subHeading1: doc.data().subheading1,
+              subHeading2: doc.data().subheading2,
+              subHeading3: doc.data().subheading3,
+              Category: doc.data().category,
+              story: doc.data().story,
+              story1: doc.data().story1,
+              date: doc.data().timestamp,
+              story2: doc.data().story2,
+              story3: doc.data().story2,
+              image: doc.data().image,
+              comment: doc.data().comment,
+              like: doc.data().like,
+            };
+            this.stories.push(data);
+            console.log("My search", this.stories);
+          });
+        });
+    },
   },
 };
 </script>
 
 <style scoped>
+#linkId {
+  text-decoration-line: none;
+}
+.nuxt-link {
+  text-decoration: none;
+}
+.divider {
+  margin: 5px;
+}
+#catsLabel {
+  margin: 10px;
+  color: #808080;
+}
+#cats {
+  border-radius: 30px;
+  background-color: #f7daba;
+  color: rgb(25, 97, 3);
+  padding: 5px 12px 5px 12px;
+  margin: 10px 7px 10px 7px;
+  box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
+}
+.scrollmenu {
+  overflow: auto;
+  white-space: wrap;
+  padding: 5px 12px 5px 12px;
+}
+
+#heading {
+  margin-top: 20px;
+}
 h2 {
   color: #f19124;
 }
 #chip {
-  margin: 20px;
+  margin: 10px;
 }
 #shareIcon {
+  color: rgb(25, 97, 3);
   text-decoration-line: none;
   margin: 5px;
 }
@@ -205,7 +315,7 @@ h2 {
 }
 #readmore {
   text-decoration-line: none;
-  font-size: 17px;
+  font-size: 16px;
   color: #492803;
   text-align: center;
   font-weight: 400;
@@ -214,10 +324,29 @@ h2 {
   color: #f19124;
 }
 hr {
-  background-color: #f19124;
+  background-color: #bebcb8;
 }
 
 .nuxt-link {
   text-decoration: none;
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 1px;
+}
+/* Track */
+::-webkit-scrollbar-track {
+  background: #fff;
+}
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #fff;
+  border-radius: 10px;
+  height: 10px;
+}
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #f19124;
 }
 </style>

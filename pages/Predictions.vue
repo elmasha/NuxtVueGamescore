@@ -17,7 +17,16 @@
             class="col-md-4"
           >
             <v-card class="mx-auto my-12" max-width="700">
-              <v-img height="280" :src="predict.image"></v-img>
+              <v-img height="280" :src="predict.image">
+                <template v-slot:placeholder>
+                  <v-row class="fill-height ma-0" align="center" justify="center">
+                    <v-progress-circular
+                      indeterminate
+                      color="green lighten-10"
+                    ></v-progress-circular>
+                  </v-row>
+                </template>
+              </v-img>
 
               <v-card-title>{{ predict.Title }}</v-card-title>
 
@@ -32,9 +41,9 @@
                   {{ predict.subheading1 }}
                 </div>
               </v-card-text>
-              <v-chip id="chip"
-                ><a id="readmore" href="newFeed.url"><span> Read more</span> </a>
-              </v-chip>
+              <nuxt-link id="chip" :to="`/news/${predict.id}`"
+                ><v-chip> <span id="readmore"> Read more</span> </v-chip>
+              </nuxt-link>
               <v-divider class="mx-4"></v-divider>
 
               <v-card-actions>

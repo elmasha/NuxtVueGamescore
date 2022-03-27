@@ -6,6 +6,7 @@
       mini-variant
       mini-variant-width="90"
       :clipped="clipped"
+
       fixed
       app
     >
@@ -26,7 +27,7 @@
     <v-app-bar :clipped-left="clipped" fixed app elevate-on-scroll>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
       <nuxt-link to="/"
-        ><img id="iconImage" src="~/assets/logo20.png" max-height="40" width="150"
+        ><img id="iconImage" src="~/assets/logo20.png" max-height="40" width="140"
       /></nuxt-link>
       <v-spacer />
 

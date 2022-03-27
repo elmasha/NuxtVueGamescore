@@ -5,7 +5,6 @@ export default {
     mode: 'spa',
     rootDir: __dirname,
     head: {
-        titleTemplate: '%s - Gamescores',
         title: 'Gamescores',
         htmlAttrs: {
             lang: 'en'
@@ -45,8 +44,10 @@ export default {
         '/api': '~/api'
     },
     // In your nuxt.config.js file:
+    modules: ['bootstrap-vue/nuxt'],
     modules: [
-        'vue-social-sharing/nuxt'
+        'vue-social-sharing/nuxt',
+
     ],
     modules: [
         [
