@@ -41,10 +41,9 @@
                   {{ predict.subheading1 }}
                 </div>
               </v-card-text>
-              <nuxt-link id="chip" :to="`/news/${predict.id}`"
+              <nuxt-link id="chip" :to="`/predictions/${predict.id}`"
                 ><v-chip> <span id="readmore"> Read more</span> </v-chip>
               </nuxt-link>
-              <v-divider class="mx-4"></v-divider>
 
               <v-card-actions>
                 <div><span>Share On</span> <v-icon>mdi-share</v-icon></div>
@@ -141,15 +140,17 @@ h2 {
   color: #f19124;
 }
 #chip {
-  margin: 20px;
+  margin: 30px;
+  text-decoration-line: none;
 }
 #shareIcon {
   text-decoration-line: none;
-  margin: 5px;
+  margin: 20px;
 }
 
 #shareIcon2:hover {
   color: #f19124;
+  margin: 20px;
 }
 #readmore {
   text-decoration-line: none;
